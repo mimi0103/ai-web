@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>AI 驅動台股科技供應鏈全景報告 (Taiwan AI Tech Supply Chain RWD)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            terminal: {
+              bg: '#080c16',
+              surface: '#0f172a',
+              card: '#131e36',
+              border: '#1e293b',
+              borderActive: '#334155'
+            },
+            neon: {
+              cyan: '#06b6d4',
+              teal: '#14b8a6',
+              sky: '#38bdf8',
+              violet: '#8b5cf6',
+              purple: '#a855f7',
+              amber: '#f59e0b',
+              emerald: '#10b981',
+              rose: '#f43f5e'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'PingFang SC', 'Noto Sans TC', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace']
+          },
+          screens: {
+            'xs': '380px'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Smooth Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080c16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Glowing borders and terminal depth */
+    .glow-cyan {
+      box-shadow: 0 0 20px -3px rgba(6, 182, 212, 0.22);
+    }
+    .glow-violet {
+      box-shadow: 0 0 20px -3px rgba(139, 92, 246, 0.22);
+    }
+    .glow-amber {
+      box-shadow: 0 0 20px -3px rgba(245, 158, 11, 0.22);
+    }
+
+    /* Fluid typography helper */
+    .fluid-title {
+      font-size: clamp(1.65rem, 4.5vw, 3.25rem);
+      line-height: 1.15;
+    }
+    .fluid-subtitle {
+      font-size: clamp(0.92rem, 2.2vw, 1.15rem);
+    }
+
+    /* Touch target guarantee */
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  </style>
+</head>
+<body class="bg-[#080c16] text-slate-100 min-h-screen font-sans antialiased selection:bg-teal-400 selection:text-slate-950 pb-16">
+
+  <!-- Top Responsive Header -->
+  <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#080c16]/90 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand & Ticker Status -->
+      <div class="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0">
+        <div class="h-9 w-9 shrink-0 rounded-xl bg-gradient-to-tr from-cyan-500 via-teal-500 to-indigo-600 flex items-center justify-center font-black text-white shadow-md shadow-cyan-500/20 text-sm">
+          AI
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="text-sm sm:text-base font-extrabold tracking-tight text-white truncate">
+              台股 AI 科技鏈全景圖
+            </span>
+            <span class="hidden xs:inline-flex items-center text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+              ● RACK REVOLUTION
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 truncate hidden sm:block">整櫃架構換代 ‧ 先進封裝 ‧ 水冷 ‧ 電力 BBU ‧ ODM 價值傳導</p>
+        </div>
+      </div>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden lg:flex items-center space-x-6 text-xs font-medium text-slate-400">
+        <a href="#chart-section" class="hover:text-cyan-400 transition-colors">產業拓撲圖譜</a>
+        <a href="#spec-revolution" class="hover:text-cyan-400 transition-colors">六大規格革命</a>
+        <a href="#business-model" class="hover:text-cyan-400 transition-colors">獲利模式比較</a>
+        <a href="#stock-screener" class="hover:text-cyan-400 transition-colors">標的篩選器</a>
+      </nav>
+
+      <!-- View Switcher & Mobile Menu Trigger -->
+      <div class="flex items-center space-x-2">
+        <a href="#chart-section" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          產業鏈圖
+        </a>
+
+        <!-- Mobile Drawer Toggle Button -->
+        <button id="mobileMenuBtn" aria-label="展開選單" class="touch-target lg:hidden p-2 rounded-lg bg-slate-800/80 border border-slate-700 text-slate-300 hover:text-white focus:outline-none">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path id="menuIcon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Drawer Menu (Hidden by default) -->
+    <div id="mobileMenu" class="lg:hidden hidden bg-slate-900/98 border-b border-slate-800 px-4 py-4 space-y-3 transition-all duration-300">
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <a href="#chart-section" class="mobile-nav-link p-3 rounded-lg bg-slate-800/90 text-cyan-400 font-semibold border border-slate-700/60 flex items-center justify-between">
+          <span>① 產業拓撲圖</span>
+          <span>→</span>
+        </a>
+        <a href="#spec-revolution" class="mobile-nav-link p-3 rounded-lg bg-slate-800/90 text-slate-200 font-semibold border border-slate-700/60 flex items-center justify-between">
+          <span>② 六大規格革命</span>
+          <span>→</span>
+        </a>
+        <a href="#business-model" class="mobile-nav-link p-3 rounded-lg bg-slate-800/90 text-slate-200 font-semibold border border-slate-700/60 flex items-center justify-between">
+          <span>③ 獲利模式比較</span>
+          <span>→</span>
+        </a>
+        <a href="#stock-screener" class="mobile-nav-link p-3 rounded-lg bg-slate-800/90 text-slate-200 font-semibold border border-slate-700/60 flex items-center justify-between">
+          <span>④ 代表個股目錄</span>
+          <span>→</span>
+        </a>
+      </div>
+      <div class="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-slate-800">
+        <span>架構換代：氣冷轉液冷 / BBU 標配化</span>
+        <span class="text-teal-400 font-mono">2026 最新</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-12 sm:space-y-16">
+
+    <!-- Hero Card: Rack-Level Explosion -->
+    <section class="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-800 bg-gradient-to-b from-slate-900/90 via-slate-900/50 to-[#080c16] p-5 sm:p-8 lg:p-12 glow-cyan">
+      <div class="absolute -right-24 -top-24 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-24 -bottom-24 w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 max-w-4xl space-y-4">
+        <!-- Tag -->
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-cyan-950/80 text-cyan-300 border border-cyan-800/60">
+          <span class="animate-pulse text-cyan-400 font-bold">●</span>
+          <span>PARADIGM SHIFT: 從晶片走向百萬美元整櫃超級電腦</span>
+        </div>
+
+        <!-- Main Title -->
+        <h1 class="fluid-title font-black text-white tracking-tight">
+          AI 到底怎麼帶動<br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400">
+            整個台灣科技硬體供應鏈？
+          </span>
+        </h1>
+
+        <p class="fluid-subtitle text-slate-300 leading-relaxed font-normal">
+          AI 運算帶來的不是消費電子的緩步升級，而是一場<strong>物理極限倒逼的「整櫃式規格大革命」</strong>。當單櫃功耗從 10kW 暴衝到 130kW 以上、重量攀升至 1.5 噸時，半導體先進封裝、水冷散熱、高壓電源與 BBU、超低損耗材料及伺服器滑軌全部必須推倒重來。台灣憑藉「全球兩小時車程即能完成零組件整合與整櫃組裝」的完整聚落，成為這場算力革命的最大收割者。
+        </p>
+      </div>
+
+      <!-- Quick Metrics - Fully Responsive Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 mt-6 sm:mt-8 pt-6 border-t border-slate-800/80">
+        
+        <div class="bg-slate-950/60 p-3 sm:p-4 rounded-xl border border-slate-800/90">
+          <div class="text-[11px] sm:text-xs text-slate-400">單櫃熱功耗躍升</div>
+          <div class="text-lg sm:text-2xl font-black text-cyan-400 mt-1 font-mono">10kW → 130kW+</div>
+          <div class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">氣冷極限突破，液冷成必備</div>
+        </div>
+
+        <div class="bg-slate-950/60 p-3 sm:p-4 rounded-xl border border-slate-800/90">
+          <div class="text-[11px] sm:text-xs text-slate-400">PCB/CCL 材料層數</div>
+          <div class="text-lg sm:text-2xl font-black text-teal-400 mt-1 font-mono">16層 → 40層+</div>
+          <div class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">M8/M9 超低損耗高毛利</div>
+        </div>
+
+        <div class="bg-slate-950/60 p-3 sm:p-4 rounded-xl border border-slate-800/90">
+          <div class="text-[11px] sm:text-xs text-slate-400">算力互聯瓶頸</div>
+          <div class="text-lg sm:text-2xl font-black text-purple-400 mt-1 font-mono">CoWoS / CPO</div>
+          <div class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">晶圓中介層與矽光子崛起</div>
+        </div>
+
+        <div class="bg-slate-950/60 p-3 sm:p-4 rounded-xl border border-slate-800/90">
+          <div class="text-[11px] sm:text-xs text-slate-400">單機櫃滿載重量</div>
+          <div class="text-lg sm:text-2xl font-black text-amber-400 mt-1 font-mono">1.2 ~ 1.5 噸</div>
+          <div class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">高承重專利滑軌壟斷利潤</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 1: 產業鏈拓撲圖譜 (Dual Responsive Modes) -->
+    <section id="chart-section" class="space-y-4 sm:space-y-6">
+      
+      <!-- Section Header & View Toggle -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-l-4 border-cyan-400 pl-3.5 sm:pl-4">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">
+            一、 台股 AI 科技產業鏈架構圖譜
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-400">
+            由上至下的算力演繹關係，手機端已自動優化為垂直流向
+          </p>
+        </div>
+
+        <!-- View Switch Buttons -->
+        <div class="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800 self-start md:self-auto">
+          <button id="viewVerticalBtn" class="touch-target text-xs font-semibold px-3 py-1.5 rounded-lg bg-cyan-500 text-slate-950 transition flex items-center gap-1.5 shadow-sm">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+            <span>手機直式脈絡</span>
+          </button>
+          <button id="viewCanvasBtn" class="touch-target text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            <span>寬幅全景拓撲</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- MODE A: 手機專屬垂直脈絡流 (Vertical Flow - Mobile Optimized) -->
+      <div id="verticalFlowContainer" class="block space-y-4">
+
+        <!-- Step 1: HPC & AI Demand -->
+        <div class="relative pl-7 sm:pl-10 pb-6 border-l-2 border-cyan-500">
+          <div class="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center font-bold text-[10px] shadow-md shadow-cyan-500/40">
+            01
+          </div>
+          <div class="bg-slate-900/90 border border-cyan-500/40 rounded-xl p-4 sm:p-5 glow-cyan">
+            <div class="flex flex-wrap items-center justify-between gap-1 text-[11px]">
+              <span class="font-mono text-cyan-400 font-bold uppercase tracking-wider">Top Driver</span>
+              <span class="text-slate-400">雲端巨頭 Capex 驅動</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-white mt-1">AI / HPC 高效能運算需求</h3>
+            <p class="text-xs text-slate-300 mt-1">北美四大 CSP（Microsoft, Google, AWS, Meta）與新創巨頭（xAI, OpenAI, Oracle）資本支出擴張，採購動能直接灌入台灣硬體供應鏈。</p>
+          </div>
+        </div>
+
+        <!-- Step 2: Compute & Memory -->
+        <div class="relative pl-7 sm:pl-10 pb-6 border-l-2 border-teal-500">
+          <div class="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-teal-500 text-slate-950 flex items-center justify-center font-bold text-[10px]">
+            02
+          </div>
+          <div class="bg-slate-900/90 border border-teal-500/40 rounded-xl p-4 sm:p-5">
+            <div class="flex flex-wrap items-center justify-between gap-1 text-[11px]">
+              <span class="font-mono text-teal-400 font-bold uppercase">Compute & Memory</span>
+              <span class="text-slate-400">核心晶片與特規記憶體</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-white mt-1">GPU / ASIC 設計 & HBM3e/4 記憶體</h3>
+            <p class="text-xs text-slate-300 mt-1">NVIDIA / AMD 掌控標準晶片；CSP 大廠加速開立專用 ASIC 降低成本。HBM 提供 TB/s 級巨量吞吐。</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3 pt-3 border-t border-slate-800 text-xs">
+              <div class="bg-slate-950/70 p-2.5 rounded-lg border border-slate-800">
+                <span class="text-teal-300 font-semibold block">ASIC 設計服務 & IP:</span>
+                <span class="font-mono text-slate-200 mt-0.5 block">世芯-KY (3661)、創意 (3443)、智原 (3035)、力旺 (3529)、M31 (6643)</span>
+              </div>
+              <div class="bg-slate-950/70 p-2.5 rounded-lg border border-slate-800">
+                <span class="text-sky-300 font-semibold block">HBM 封裝介面與特規記憶體:</span>
+                <span class="font-mono text-slate-200 mt-0.5 block">愛普* (6531)、京元電 (2449 - 預燒測試)、旺宏 (2337)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Foundry -->
+        <div class="relative pl-7 sm:pl-10 pb-6 border-l-2 border-indigo-500">
+          <div class="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-[10px]">
+            03
+          </div>
+          <div class="bg-slate-900/90 border border-indigo-500/40 rounded-xl p-4 sm:p-5">
+            <div class="flex flex-wrap items-center justify-between gap-1 text-[11px]">
+              <span class="font-mono text-indigo-400 font-bold uppercase">Pure Foundry</span>
+              <span class="text-slate-400">先進製程 3nm / 2nm (GAA)</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-white mt-1">晶圓代工製造 (Foundry)</h3>
+            <p class="text-xs text-slate-300 mt-1">全球所有先進 AI 加速晶片幾乎 100% 仰賴台灣製造，擁有極高議價權與毛利率保護。</p>
+            <div class="mt-2.5 pt-2 border-t border-slate-800 flex flex-wrap gap-2 text-xs">
+              <span class="px-2.5 py-1 rounded bg-indigo-950/70 text-indigo-300 font-mono border border-indigo-700/50 font-bold">
+                台積電 (2330) - 獨占全球 AI 加速晶片
+              </span>
+              <span class="px-2.5 py-1 rounded bg-slate-950 text-slate-300 font-mono border border-slate-800">
+                聯電 (2303) - 成熟特殊製程中介層
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Advanced Packaging -->
+        <div class="relative pl-7 sm:pl-10 pb-6 border-l-2 border-purple-500">
+          <div class="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-purple-500 text-white flex items-center justify-center font-bold text-[10px]">
+            04
+          </div>
+          <div class="bg-slate-900/90 border border-purple-500/40 rounded-xl p-4 sm:p-5 glow-violet">
+            <div class="flex flex-wrap items-center justify-between gap-1 text-[11px]">
+              <span class="font-mono text-purple-400 font-bold uppercase">Advanced Packaging</span>
+              <span class="text-slate-400">產能瓶頸核心</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-white mt-1">先進封裝生態系：CoWoS / SoIC / 設備耗材</h3>
+            <p class="text-xs text-slate-300 mt-1">算力不再只靠微縮電晶體，而是靠 2.5D/3D 異質整合將 HBM 與 GPU 堆疊。CoWoS 產能吃緊直接帶動本土封裝設備股訂單爆量。</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-800 text-xs">
+              <div class="bg-slate-950/70 p-2 rounded-lg border border-slate-800">
+                <span class="text-purple-400 font-bold block text-[11px]">專業封測 (OSAT):</span>
+                <span class="font-mono text-slate-200">日月光投控 (3711)<br>京元電 (2449)<br>矽格 (6257)</span>
+              </div>
+              <div class="bg-slate-950/70 p-2 rounded-lg border border-slate-800">
+                <span class="text-purple-400 font-bold block text-[11px]">濕製程/分選設備:</span>
+                <span class="font-mono text-slate-200">弘塑 (3131)<br>辛耘 (3583)<br>萬潤 (6187) / 均華</span>
+              </div>
+              <div class="bg-slate-950/70 p-2 rounded-lg border border-slate-800">
+                <span class="text-purple-400 font-bold block text-[11px]">晶圓載具與測試座:</span>
+                <span class="font-mono text-slate-200">家登 (3680 - FOUP)<br>穎崴 (6515 - Socket)<br>旺矽 (6223 - 探針卡)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: 5 Key Components Branches -->
+        <div class="relative pl-7 sm:pl-10 pb-6 border-l-2 border-emerald-500">
+          <div class="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-bold text-[10px]">
+            05
+          </div>
+          <div class="bg-slate-900/90 border border-emerald-500/40 rounded-xl p-4 sm:p-5">
+            <div class="flex flex-wrap items-center justify-between gap-1 text-[11px]">
+              <span class="font-mono text-emerald-400 font-bold uppercase">5 Key Component Verticals</span>
+              <span class="text-slate-400">規格升級與高 ASP 主力</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-white mt-1">中游五大高規格零組件（規格暴衝）</h3>
+            <p class="text-xs text-slate-300 mt-1">因應功耗與傳輸極限，五大次產業享有強大定價權與營收乘數效應：</p>
+
+            <!-- Accordion / Card Stacks for 5 Verticals -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 mt-3 pt-3 border-t border-slate-800">
+              
+              <!-- 5.1 散熱 -->
+              <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 hover:border-teal-500/50 transition">
+                <div class="flex items-center justify-between">
+                  <span class="text-teal-400 font-bold text-xs">① 液冷散熱 (CDU/水冷板)</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded bg-teal-500/10 text-teal-300">ASP +400%</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Blackwell 功耗破千瓦，氣冷瓦解。水冷板、分歧管、快接頭成標配。</p>
+                <div class="text-xs font-mono text-slate-200 mt-2 font-semibold">
+                  奇鋐 (3017)、雙鴻 (3324)、健策 (3653)、高力 (8996)
+                </div>
+              </div>
+
+              <!-- 5.2 電源與 BBU -->
+              <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 hover:border-amber-500/50 transition">
+                <div class="flex items-center justify-between">
+                  <span class="text-amber-400 font-bold text-xs">② 電源系統與 BBU</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-300">防脈衝壓降</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Power Shelf 5.5kW+ 集中供電，BBU 備援電池從選配跳級為整櫃標配。</p>
+                <div class="text-xs font-mono text-slate-200 mt-2 font-semibold">
+                  台達電 (2308)、光寶科 (2301)、新盛力 (4931)、順達 (3211)
+                </div>
+              </div>
+
+              <!-- 5.3 PCB / CCL -->
+              <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 hover:border-sky-500/50 transition">
+                <div class="flex items-center justify-between">
+                  <span class="text-sky-400 font-bold text-xs">③ 高頻材料 PCB / CCL</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-300">M8/M9超低損</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">30~40層以上高多層板，極低介電損耗材料，UBB/OAM 主板價值躍升。</p>
+                <div class="text-xs font-mono text-slate-200 mt-2 font-semibold">
+                  台光電 (2383)、金像電 (2368)、台燿 (6274)、欣興 (3037)
+                </div>
+              </div>
+
+              <!-- 5.4 機構與重型滑軌 -->
+              <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 hover:border-rose-500/50 transition">
+                <div class="flex items-center justify-between">
+                  <span class="text-rose-400 font-bold text-xs">④ 精密滑軌與水冷機箱</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded bg-rose-500/10 text-rose-300">1.5噸承重</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">機櫃極重，完全抽出無微米變形專利。川湖全球獨佔高階七成以上份額。</p>
+                <div class="text-xs font-mono text-slate-200 mt-2 font-semibold">
+                  川湖 (2059 - 毛利率>60%)、勤誠 (8210)、晟銘電 (3013)
+                </div>
+              </div>
+
+              <!-- 5.5 矽光子與網通 -->
+              <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 hover:border-purple-500/50 transition">
+                <div class="flex items-center justify-between">
+                  <span class="text-purple-400 font-bold text-xs">⑤ 矽光子 CPO 與網通傳輸</span>
+                  <span class="text-[10px] px-1.5 py-0.2 rounded bg-purple-500/10 text-purple-300">800G / 1.6T</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">銅線傳輸突破物理極限，走向光電共封裝（CPO），橫向集群通訊爆發。</p>
+                <div class="text-xs font-mono text-slate-200 mt-2 font-semibold">
+                  智邦 (2345)、貿聯-KY (3665)、聯鈞 (3450)、眾達-KY (4977)
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6: ODM System Integration -->
+        <div class="relative pl-7 sm:pl-10 pb-6 border-l-2 border-cyan-400">
+          <div class="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-cyan-400 text-slate-950 flex items-center justify-center font-bold text-[10px]">
+            06
+          </div>
+          <div class="bg-slate-900/90 border border-cyan-400/40 rounded-xl p-4 sm:p-5">
+            <div class="flex flex-wrap items-center justify-between gap-1 text-[11px]">
+              <span class="font-mono text-cyan-400 font-bold uppercase">System Integration (L10~L12)</span>
+              <span class="text-slate-400">整櫃整合出貨</span>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-white mt-1">伺服器系統代工 (ODM Direct 模式)</h3>
+            <p class="text-xs text-slate-300 mt-1">直接對接北美四大 CSP 客製化規格，涵蓋水路灌注、高負載整櫃燒機（Burn-in），以每座上百萬美元交付。</p>
+            <div class="flex flex-wrap gap-2 mt-3 pt-3 border-t border-slate-800 text-xs font-mono">
+              <span class="px-2.5 py-1 rounded bg-slate-950 text-cyan-300 border border-slate-800 font-bold">廣達 (2382)</span>
+              <span class="px-2.5 py-1 rounded bg-slate-950 text-cyan-300 border border-slate-800 font-bold">鴻海 (2317 - NVL72 主力)</span>
+              <span class="px-2.5 py-1 rounded bg-slate-950 text-cyan-300 border border-slate-800 font-bold">緯穎 (6669 - 純度最高)</span>
+              <span class="px-2.5 py-1 rounded bg-slate-950 text-slate-300 border border-slate-800">緯創 (3231 - 運算板獨家)</span>
+              <span class="px-2.5 py-1 rounded bg-slate-950 text-slate-300 border border-slate-800">技嘉 (2376)</span>
+              <span class="px-2.5 py-1 rounded bg-slate-950 text-slate-300 border border-slate-800">英業達 (2356)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 7: End Customers -->
+        <div class="relative pl-7 sm:pl-10">
+          <div class="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-slate-700 text-white flex items-center justify-center font-bold text-[10px]">
+            07
+          </div>
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-center">
+            <span class="text-[11px] font-mono text-slate-500 uppercase">終端採購需求來源 (Hyperscalers)</span>
+            <div class="flex flex-wrap justify-center items-center gap-3 sm:gap-6 mt-2 text-xs sm:text-sm font-semibold text-slate-300">
+              <span>Microsoft Azure</span>
+              <span>•</span>
+              <span>Google Cloud</span>
+              <span>•</span>
+              <span>AWS</span>
+              <span>•</span>
+              <span>Meta</span>
+              <span>•</span>
+              <span>xAI / Oracle</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MODE B: 寬幅全景拓撲畫布 (Desktop Wide Canvas - Toggleable) -->
+      <div id="canvasFlowContainer" class="hidden overflow-x-auto bg-slate-900/60 border border-slate-800 rounded-2xl p-6 sm:p-8">
+        <div class="min-w-[900px] flex flex-col items-center space-y-6">
+          
+          <!-- L0: Demand -->
+          <div class="w-full max-w-md bg-gradient-to-r from-cyan-950 via-slate-900 to-indigo-950 border border-cyan-500/80 rounded-xl p-4 text-center shadow-lg">
+            <div class="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">TOP DEMAND</div>
+            <div class="text-base font-bold text-white mt-0.5">AI / HPC 高效能運算需求</div>
+            <div class="text-xs text-slate-300">全球四大雲端服務商 (CSP) 資本支出競賽</div>
+          </div>
+
+          <!-- Down Arrow -->
+          <div class="w-0.5 h-6 bg-gradient-to-b from-cyan-400 to-teal-400"></div>
+
+          <!-- L1: GPU & HBM -->
+          <div class="w-full grid grid-cols-2 gap-6 max-w-3xl">
+            <div class="bg-slate-950 p-4 rounded-xl border border-teal-500/40 text-left">
+              <span class="text-xs font-mono text-teal-400 font-bold block">GPU / ASIC 設計服務</span>
+              <div class="text-sm font-bold text-white mt-1">世芯-KY (3661)、創意 (3443)、智原 (3035)</div>
+              <div class="text-xs text-slate-400 mt-1">CSP 自研晶片 NRE 與量產委託</div>
+            </div>
+            <div class="bg-slate-950 p-4 rounded-xl border border-sky-500/40 text-left">
+              <span class="text-xs font-mono text-sky-400 font-bold block">HBM 堆疊記憶體 / 介面</span>
+              <div class="text-sm font-bold text-white mt-1">愛普* (6531)、京元電 (2449 - 預燒測試)</div>
+              <div class="text-xs text-slate-400 mt-1">TB/s 巨量頻寬與測試插座</div>
+            </div>
+          </div>
+
+          <!-- Down Arrow -->
+          <div class="w-0.5 h-6 bg-gradient-to-b from-teal-400 to-indigo-500"></div>
+
+          <!-- L2: Foundry -->
+          <div class="w-full max-w-2xl bg-indigo-950/40 border border-indigo-500/80 rounded-xl p-4 text-center">
+            <span class="text-[10px] font-mono text-indigo-300 uppercase tracking-wider font-bold">FOUNDRY 製造源頭</span>
+            <div class="text-base font-bold text-white mt-0.5">晶圓代工：台積電 (2330 獨佔先進製程) / 聯電 (2303)</div>
+          </div>
+
+          <!-- Down Arrow -->
+          <div class="w-0.5 h-6 bg-gradient-to-b from-indigo-500 to-purple-500"></div>
+
+          <!-- L3: CoWoS & Equipment -->
+          <div class="w-full max-w-4xl bg-purple-950/30 border border-purple-500/70 rounded-xl p-4 text-left">
+            <div class="flex items-center justify-between text-xs font-mono text-purple-300">
+              <span class="font-bold">2.5D / 3D 先進封裝 (CoWoS / SoIC) & 設備聚落</span>
+              <span>產能瓶頸核心</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3 mt-3 text-xs">
+              <div class="bg-slate-950/80 p-2.5 rounded border border-slate-800">
+                <span class="text-purple-400 block font-bold">封裝與測試:</span>
+                <span class="font-mono text-slate-200">日月光投控 (3711)、京元電 (2449)</span>
+              </div>
+              <div class="bg-slate-950/80 p-2.5 rounded border border-slate-800">
+                <span class="text-purple-400 block font-bold">濕製程與貼片設備:</span>
+                <span class="font-mono text-slate-200">弘塑 (3131)、辛耘 (3583)、萬潤 (6187)</span>
+              </div>
+              <div class="bg-slate-950/80 p-2.5 rounded border border-slate-800">
+                <span class="text-purple-400 block font-bold">晶圓載具與耗材:</span>
+                <span class="font-mono text-slate-200">家登 (3680)、穎崴 (6515)、旺矽 (6223)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Down Arrow -->
+          <div class="w-0.5 h-6 bg-gradient-to-b from-purple-500 to-emerald-500"></div>
+
+          <!-- L4: 5 Component Columns -->
+          <div class="w-full grid grid-cols-5 gap-3 text-left">
+            
+            <div class="bg-slate-950 p-3 rounded-xl border border-teal-500/40">
+              <span class="text-[11px] font-bold text-teal-400 block">① 液冷散熱</span>
+              <p class="text-[10px] text-slate-400 mt-1">Cold Plate、CDU 水冷箱</p>
+              <div class="text-xs font-mono text-slate-200 mt-2 font-semibold">奇鋐 (3017)<br>雙鴻 (3324)<br>健策 (3653)</div>
+            </div>
+
+            <div class="bg-slate-950 p-3 rounded-xl border border-amber-500/40">
+              <span class="text-[11px] font-bold text-amber-400 block">② 電源與 BBU</span>
+              <p class="text-[10px] text-slate-400 mt-1">5.5kW Power Shelf、備援電池</p>
+              <div class="text-xs font-mono text-slate-200 mt-2 font-semibold">台達電 (2308)<br>新盛力 (4931)<br>順達 (3211)</div>
+            </div>
+
+            <div class="bg-slate-950 p-3 rounded-xl border border-sky-500/40">
+              <span class="text-[11px] font-bold text-sky-400 block">③ 高頻 PCB/CCL</span>
+              <p class="text-[10px] text-slate-400 mt-1">30~40層、M8 超低損耗</p>
+              <div class="text-xs font-mono text-slate-200 mt-2 font-semibold">台光電 (2383)<br>金像電 (2368)<br>台燿 (6274)</div>
+            </div>
+
+            <div class="bg-slate-950 p-3 rounded-xl border border-rose-500/40">
+              <span class="text-[11px] font-bold text-rose-400 block">④ 精密重型滑軌</span>
+              <p class="text-[10px] text-slate-400 mt-1">1.5噸機櫃、毛利率逾60%</p>
+              <div class="text-xs font-mono text-slate-200 mt-2 font-semibold">川湖 (2059)<br>勤誠 (8210)<br>晟銘電 (3013)</div>
+            </div>
+
+            <div class="bg-slate-950 p-3 rounded-xl border border-purple-500/40">
+              <span class="text-[11px] font-bold text-purple-400 block">⑤ 矽光子與網通</span>
+              <p class="text-[10px] text-slate-400 mt-1">800G 交換機、CPO 模組</p>
+              <div class="text-xs font-mono text-slate-200 mt-2 font-semibold">智邦 (2345)<br>貿聯-KY (3665)<br>聯鈞 (3450)</div>
+            </div>
+
+          </div>
+
+          <!-- Down Arrow -->
+          <div class="w-0.5 h-6 bg-gradient-to-b from-emerald-500 to-cyan-500"></div>
+
+          <!-- L5: ODM -->
+          <div class="w-full max-w-3xl bg-slate-950 border-2 border-cyan-500/60 rounded-xl p-4 text-center">
+            <span class="text-[10px] font-mono text-cyan-400 uppercase tracking-widest font-bold">ODM DIRECT 整櫃系統整合 (L10~L12)</span>
+            <div class="text-base font-bold text-white mt-1">廣達 (2382) ‧ 鴻海 (2317) ‧ 緯穎 (6669) ‧ 緯創 (3231) ‧ 技嘉 (2376)</div>
+            <div class="text-xs text-slate-400 mt-1">北美四大雲端巨頭直採全球交付</div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 2: 六大硬體規格革命深入剖析 -->
+    <section id="spec-revolution" class="space-y-6">
+      
+      <div class="border-l-4 border-purple-500 pl-3.5 sm:pl-4">
+        <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">
+          二、 驅動供應鏈暴衝的「六大硬體規格革命」
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-400">
+          為什麼這六個環節能享有平均售價 (ASP) 數倍增長與高專利護城河？
+        </p>
+      </div>
+
+      <!-- Responsive Grid for 6 Revolutions -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5">
+
+        <!-- Card 1: Liquid Cooling -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col justify-between hover:border-teal-500/50 transition">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/30 font-bold">ASP +300% ~ 500%</span>
+              <span class="text-xs text-slate-400 font-mono">HEAT DISSIPATION</span>
+            </div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="text-teal-400">①</span> 水冷散熱：氣冷極限瓦解
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              單晶片 TDP 突破 1,000W（如 Blackwell B200），3D VC 氣冷宣告退役。水冷系統包含<strong>水冷板 (Cold Plate)</strong>、<strong>冷卻液分配箱 (CDU)</strong>、分歧管 (Manifold) 及防漏液快接頭 (UQD)，單機散熱總價值較前代伺服器暴增數倍。
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80">
+            <div class="text-[11px] text-slate-400">核心受惠台股：</div>
+            <div class="text-xs font-mono text-teal-300 font-semibold mt-0.5">奇鋐 (3017)、雙鴻 (3324)、健策 (3653)、高力 (8996)</div>
+          </div>
+        </div>
+
+        <!-- Card 2: CoWoS Packaging -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col justify-between hover:border-purple-500/50 transition">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/30 font-bold">產能擴產倍增</span>
+              <span class="text-xs text-slate-400 font-mono">CHIPLET INTERCONNECT</span>
+            </div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="text-purple-400">②</span> 先進封裝：突破光罩面積極限
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              GPU 與 HBM 必須以微米級間距透過矽中介層（Interposer）連結。台積電 CoWoS 與 SoIC 產能供不應求，帶動本土濕製程清洗機、自動化貼片檢驗設備訂單能見度直達數季。
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80">
+            <div class="text-[11px] text-slate-400">核心受惠台股：</div>
+            <div class="text-xs font-mono text-purple-300 font-semibold mt-0.5">台積電 (2330)、弘塑 (3131)、辛耘 (3583)、萬潤 (6187)</div>
+          </div>
+        </div>
+
+        <!-- Card 3: High-Layer PCB/CCL -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col justify-between hover:border-sky-500/50 transition">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/30 font-bold">30~40層+ M8/M9</span>
+              <span class="text-xs text-slate-400 font-mono">SIGNAL INTEGRITY</span>
+            </div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="text-sky-400">③</span> 高頻材料：解決極端訊號衰減
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              PCIe 5.0/6.0 與高速交換器讓高頻訊號極易失真丟包。UBB/OAM 主板必須採用極低介電損耗（Ultra Low Loss）銅箔基板與超過 30 層精密 HDI 板，推升關鍵材料毛利率。
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80">
+            <div class="text-[11px] text-slate-400">核心受惠台股：</div>
+            <div class="text-xs font-mono text-sky-300 font-semibold mt-0.5">台光電 (2383)、金像電 (2368)、台燿 (6274)、欣興 (3037)</div>
+          </div>
+        </div>
+
+        <!-- Card 4: Power & BBU -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col justify-between hover:border-amber-500/50 transition">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold">選配變整櫃標配</span>
+              <span class="text-xs text-slate-400 font-mono">POWER DYNAMICS</span>
+            </div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="text-amber-400">④</span> 電源革命與 BBU：抗動態脈衝
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              整機櫃運算啟動瞬間會產生上千安培的動態脈衝電流（Current Spike），引發電壓急墜。獨立集中式 5.5kW Power Shelf 搭配伺服器機櫃專屬 BBU 鋰電池模組，已成為資料中心剛性標配。
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80">
+            <div class="text-[11px] text-slate-400">核心受惠台股：</div>
+            <div class="text-xs font-mono text-amber-300 font-semibold mt-0.5">台達電 (2308)、光寶科 (2301)、新盛力 (4931)、順達 (3211)</div>
+          </div>
+        </div>
+
+        <!-- Card 5: Heavy-Duty Slide Rails -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col justify-between hover:border-rose-500/50 transition">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/30 font-bold">毛利率 > 60%</span>
+              <span class="text-xs text-slate-400 font-mono">MECHANICAL MOAT</span>
+            </div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="text-rose-400">⑤</span> 重型滑軌：千斤壓頂下的專利壁壘
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              含水冷液的整櫃重達 1.5 噸，單一伺服器節點抽拉維護時必須承受巨大偏心力矩且不得震動傷及光纖與晶片。川湖（2059）憑藉深厚專利與耐磨滾珠結構獨占高階逾七成市場。
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80">
+            <div class="text-[11px] text-slate-400">核心受惠台股：</div>
+            <div class="text-xs font-mono text-rose-300 font-semibold mt-0.5">川湖 (2059)、勤誠 (8210)、晟銘電 (3013)、迎廣 (6117)</div>
+          </div>
+        </div>
+
+        <!-- Card 6: Optical Switching & CPO -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-5 flex flex-col justify-between hover:border-indigo-500/50 transition">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 font-bold">800G → 1.6T 矽光子</span>
+              <span class="text-xs text-slate-400 font-mono">OPTICAL HIGHWAY</span>
+            </div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="text-indigo-400">⑥</span> 銅退光進：集群傳輸極限突破
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              數萬顆 GPU 互聯時，橫向資料流量（East-West Traffic）遠大於對外流量。當速率突破 1.6T，傳統銅線功耗與發熱過高，「以光代電」的矽光子 CPO 共同封裝光學架構進入實質商業化爆發期。
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80">
+            <div class="text-[11px] text-slate-400">核心受惠台股：</div>
+            <div class="text-xs font-mono text-indigo-300 font-semibold mt-0.5">智邦 (2345)、貿聯-KY (3665)、聯鈞 (3450)、眾達-KY (4977)</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: 獲利模式與財報特性比較 -->
+    <section id="business-model" class="space-y-6">
+      
+      <div class="border-l-4 border-amber-500 pl-3.5 sm:pl-4">
+        <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">
+          三、 上中下游商業獲利模式與財報特性解析
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-400">
+          為什麼代工廠營收爆衝但毛利被稀釋？為什麼零組件廠反而賺取最高毛利？
+        </p>
+      </div>
+
+      <!-- DESKTOP VIEW: Structured Table (Hidden on small mobile) -->
+      <div class="hidden md:block overflow-x-auto bg-slate-900/60 border border-slate-800 rounded-xl">
+        <table class="w-full text-left text-xs text-slate-300 border-collapse">
+          <thead>
+            <tr class="bg-slate-950/80 text-slate-400 border-b border-slate-800 text-[11px] uppercase tracking-wider">
+              <th class="p-3.5 font-bold">供應鏈環節</th>
+              <th class="p-3.5 font-bold">代表指標股</th>
+              <th class="p-3.5 font-bold">營收與獲利模式</th>
+              <th class="p-3.5 font-bold">毛利率區間</th>
+              <th class="p-3.5 font-bold">競爭護城河</th>
+              <th class="p-3.5 font-bold">關鍵財報觀察指標</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60">
+            <tr class="hover:bg-slate-800/30">
+              <td class="p-3.5 font-bold text-indigo-400">上游晶圓與先進封裝</td>
+              <td class="p-3.5 font-mono text-white">台積電 (2330)<br>日月光 (3711)</td>
+              <td class="p-3.5">算力唯一產能瓶頸，具備絕對定價權與長期合約保護。</td>
+              <td class="p-3.5 font-mono font-bold text-emerald-400">53% ~ 56%+</td>
+              <td class="p-3.5">埃米級製程技術、CoWoS/SoIC 完整生態系。</td>
+              <td class="p-3.5 text-slate-400">資本支出 (CapEx)、先進製程營收佔比、產能利用率。</td>
+            </tr>
+            <tr class="hover:bg-slate-800/30">
+              <td class="p-3.5 font-bold text-purple-400">IC 設計服務與 IP</td>
+              <td class="p-3.5 font-mono text-white">世芯-KY (3661)<br>創意 (3443)</td>
+              <td class="p-3.5">協助 CSP 設計 ASIC，前期收 NRE 研發費，量產收權利金。</td>
+              <td class="p-3.5 font-mono font-bold text-purple-400">20% ~ 45% (純NRE更高)</td>
+              <td class="p-3.5">高難度實體設計架構經驗、取得台積電先進產能額度。</td>
+              <td class="p-3.5 text-slate-400">CSP 客戶晶片量產排程、NRE 認列專案量。</td>
+            </tr>
+            <tr class="hover:bg-slate-800/30">
+              <td class="p-3.5 font-bold text-teal-400">中游關鍵高毛利零組件</td>
+              <td class="p-3.5 font-mono text-white">川湖 (2059)<br>奇鋐 (3017)<br>台光電 (2383)</td>
+              <td class="p-3.5">規格升級大幅帶動 ASP 暴增，享受產品世代換代紅利。</td>
+              <td class="p-3.5 font-mono font-bold text-teal-400">28% ~ 65%+ (川湖最高)</td>
+              <td class="p-3.5">機構專利壁壘、材料配方、通過原廠合格供應商認證 (AVL)。</td>
+              <td class="p-3.5 text-slate-400">毛利率逐季攀升斜率、高階產品（水冷/M8板）滲透率。</td>
+            </tr>
+            <tr class="hover:bg-slate-800/30">
+              <td class="p-3.5 font-bold text-cyan-400">下游整機代工 (ODM)</td>
+              <td class="p-3.5 font-mono text-white">廣達 (2382)<br>緯穎 (6669)<br>鴻海 (2317)</td>
+              <td class="p-3.5">單櫃出貨營收巨大，GPU 成本佔比高，呈現「毛利率稀釋但營益總額暴衝」。</td>
+              <td class="p-3.5 font-mono font-bold text-amber-400">6% ~ 11% (名義毛利)</td>
+              <td class="p-3.5">採購昂貴晶片的雄厚營運資金、整櫃散熱電力全球測試交付力。</td>
+              <td class="p-3.5 text-teal-300 font-semibold">營業利益絕對金額 (Operating Profit)、存貨周轉、現金流。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- MOBILE VIEW: Cards Stack (Visible on small screens) -->
+      <div class="md:hidden space-y-3">
+        
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-indigo-400">上游晶圓與先進封裝</span>
+            <span class="text-xs font-mono font-bold text-emerald-400">毛利 53% ~ 56%+</span>
+          </div>
+          <div class="text-xs font-mono text-white font-semibold">代表：台積電 (2330)、日月光投控 (3711)</div>
+          <p class="text-xs text-slate-300">算力唯一核心瓶頸，掌握絕對定價權與技術斷層壁壘。</p>
+          <div class="text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+            <span class="text-slate-500 font-semibold">財報重點：</span>資本支出指引 (CapEx)、先進製程稼動率
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-purple-400">IC 設計服務與 IP</span>
+            <span class="text-xs font-mono font-bold text-purple-400">毛利 20% ~ 45%+</span>
+          </div>
+          <div class="text-xs font-mono text-white font-semibold">代表：世芯-KY (3661)、創意 (3443)、智原 (3035)</div>
+          <p class="text-xs text-slate-300">雲端巨頭自研 ASIC 核心推手，賺取前期 NRE 與後續量產權利金。</p>
+          <div class="text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+            <span class="text-slate-500 font-semibold">財報重點：</span>北美 CSP 客戶 ASIC 專案進度與 Turnkey 比重
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-teal-400">中游高毛利關鍵零組件</span>
+            <span class="text-xs font-mono font-bold text-teal-400">毛利 28% ~ 65%+</span>
+          </div>
+          <div class="text-xs font-mono text-white font-semibold">代表：川湖 (2059)、奇鋐 (3017)、台光電 (2383)</div>
+          <p class="text-xs text-slate-300">受惠單機零件價值（ASP）倍數成長，專利壁壘形成極高利潤率。</p>
+          <div class="text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+            <span class="text-slate-500 font-semibold">財報重點：</span>毛利率持續創高能力、水冷/M8材料滲透率
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-cyan-400">下游整機系統代工 (ODM)</span>
+            <span class="text-xs font-mono font-bold text-amber-400">毛利 6% ~ 11% (稀釋)</span>
+          </div>
+          <div class="text-xs font-mono text-white font-semibold">代表：廣達 (2382)、鴻海 (2317)、緯穎 (6669)</div>
+          <p class="text-xs text-slate-300">GPU 佔成本 70% 以上使毛利率稀釋，但營收與「營業利益絕對額」暴衝。</p>
+          <div class="text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+            <span class="text-teal-300 font-semibold">財報重點：</span>營業利益總額 (OP)、存貨周轉天數、現金流
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 4: 台股核心標的篩選器 (Interactive Stock Screener) -->
+    <section id="stock-screener" class="space-y-4 sm:space-y-6">
+      
+      <div class="border-l-4 border-emerald-500 pl-3.5 sm:pl-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">
+            四、 台股 AI 科技鏈核心標的速查目錄
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-400">
+            即時搜尋代號、名稱、技術環節與關鍵護城河
+          </p>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative w-full md:w-72">
+          <input 
+            type="text" 
+            id="stockSearchInput" 
+            placeholder="搜尋代號、股名、水冷、BBU..." 
+            class="touch-target w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition"
+          >
+          <span class="absolute right-3.5 top-3 text-slate-500 text-xs pointer-events-none">🔍</span>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills (Scrollable on phone) -->
+      <div class="overflow-x-auto pb-1.5 -mx-1 px-1 flex gap-2 text-xs no-scrollbar" id="screenerFilters">
+        <button class="filter-pill touch-target shrink-0 px-3.5 py-1.5 rounded-lg bg-cyan-500 text-slate-950 font-bold transition" data-cat="ALL">全部 (ALL)</button>
+        <button class="filter-pill touch-target shrink-0 px-3.5 py-1.5 rounded-lg bg-slate-850 bg-slate-800/90 text-slate-300 hover:bg-slate-700 transition" data-cat="晶圓封測">晶圓與先進封裝</button>
+        <button class="filter-pill touch-target shrink-0 px-3.5 py-1.5 rounded-lg bg-slate-800/90 text-slate-300 hover:bg-slate-700 transition" data-cat="ASIC">ASIC 與 IP</button>
+        <button class="filter-pill touch-target shrink-0 px-3.5 py-1.5 rounded-lg bg-slate-800/90 text-slate-300 hover:bg-slate-700 transition" data-cat="散熱水冷">液冷散熱</button>
+        <button class="filter-pill touch-target shrink-0 px-3.5 py-1.5 rounded-lg bg-slate-800/90 text-slate-300 hover:bg-slate-700 transition" data-cat="電源BBU">電源與 BBU</button>
+        <button class="filter-pill touch-target shrink-0 px-3.5 py-1.5 rounded-lg bg-slate-800/90 text-slate-300 hover:bg-slate-700 transition" data-cat="PCB">PCB 與 CCL 材料</button>
+        <button class="filter-pill touch-target shrink-0 px-3.5 py-1.5 rounded-lg bg-slate-800/90 text-slate-300 hover:bg-slate-700 transition" data-cat="滑軌機殼">機構導軌與機殼</button>
+        <button class="filter-pill touch-target shrink-0 px-3.5 py-1.5 rounded-lg bg-slate-800/90 text-slate-300 hover:bg-slate-700 transition" data-cat="網通光">網通與矽光子</button>
+        <button class="filter-pill touch-target shrink-0 px-3.5 py-1.5 rounded-lg bg-slate-800/90 text-slate-300 hover:bg-slate-700 transition" data-cat="ODM">整櫃代工 ODM</button>
+      </div>
+
+      <!-- Stock Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" id="stockCardContainer">
+
+        <!-- TSMC -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-cyan-500/60 transition" data-category="晶圓封測" data-search="2330 台積電 晶圓代工 先進封裝 CoWoS SoIC 3nm 2nm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400">2330</span>
+            <span class="text-[11px] text-slate-400">晶圓代工 / 先進封裝</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">台積電</h4>
+            <span class="text-[11px] text-emerald-400 font-mono">毛利率 53%+</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">全球 AI 晶片產能核心獨占，以 3nm/2nm 與 CoWoS 綁定所有頂級算力。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：埃米製程與定價權</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="2330">複製代號</button>
+          </div>
+        </div>
+
+        <!-- GPPC 弘塑 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-cyan-500/60 transition" data-category="晶圓封測" data-search="3131 弘塑 封裝設備 濕製程 清洗機 CoWoS">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400">3131</span>
+            <span class="text-[11px] text-slate-400">先進封裝濕製程設備</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">弘塑</h4>
+            <span class="text-[11px] text-emerald-400 font-mono">CoWoS 訂單滿載</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">台積電 CoWoS 擴產第一線晶圓旋轉清洗與蝕刻機台核心供應商。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：高難度化學清洗專利</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="3131">複製代號</button>
+          </div>
+        </div>
+
+        <!-- Alchip 世芯-KY -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-purple-500/60 transition" data-category="ASIC" data-search="3661 世芯-KY 世芯 ASIC IP AWS Trainium 晶片設計">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-400">3661</span>
+            <span class="text-[11px] text-slate-400">ASIC 設計服務</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">世芯-KY</h4>
+            <span class="text-[11px] text-purple-400 font-mono">雲端巨頭首選</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">AWS Trainium 與北美 CSP 自研加速晶片主要架構夥伴，具備 3nm 投片實力。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：超大規模晶片實體設計</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="3661">複製代號</button>
+          </div>
+        </div>
+
+        <!-- AVC 奇鋐 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-teal-500/60 transition" data-category="散熱水冷" data-search="3017 奇鋐 散熱 水冷 水冷板 Cold Plate CDU 風扇">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-teal-500/20 text-teal-400">3017</span>
+            <span class="text-[11px] text-slate-400">液冷散熱模組系統</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">奇鋐</h4>
+            <span class="text-[11px] text-teal-400 font-mono">Blackwell 原廠認證</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">從水冷板 (Cold Plate)、CDU、分歧管到風扇垂直整合，搶下 NVL72 主力份額。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：全套散熱方案一站式交貨</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="3017">複製代號</button>
+          </div>
+        </div>
+
+        <!-- Auras 雙鴻 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-teal-500/60 transition" data-category="散熱水冷" data-search="3324 雙鴻 水冷板 液冷 分歧管 散熱">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-teal-500/20 text-teal-400">3324</span>
+            <span class="text-[11px] text-slate-400">液冷散熱先鋒</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">雙鴻</h4>
+            <span class="text-[11px] text-teal-400 font-mono">毛利率持續攻頂</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">早早投入水冷研發，在分歧管與水冷板品質穩定，切入 CSP 直接認證。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：熱傳導技術專利與良率</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="3324">複製代號</button>
+          </div>
+        </div>
+
+        <!-- King Slide 川湖 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-rose-500/60 transition" data-category="滑軌機殼" data-search="2059 川湖 滑軌 導軌 專利 伺服器 機構件">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-400">2059</span>
+            <span class="text-[11px] text-slate-400">超重型伺服器滑軌</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">川湖</h4>
+            <span class="text-[11px] text-emerald-400 font-mono">毛利率 > 60%</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">全球伺服器導軌專利霸主，AI 機櫃 1.5 噸超重環境下唯一無可替代之選擇。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：全球數千項機構專利封鎖</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="2059">複製代號</button>
+          </div>
+        </div>
+
+        <!-- EMC 台光電 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-sky-500/60 transition" data-category="PCB" data-search="2383 台光電 銅箔基板 CCL M8 無鹵素 高頻高速">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-400">2383</span>
+            <span class="text-[11px] text-slate-400">銅箔基板 (CCL) 龍頭</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">台光電</h4>
+            <span class="text-[11px] text-sky-400 font-mono">M8 材料獨佔市佔</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">囊括全球 AI 伺服器 UBB 與 OAM 高階材料主要市佔，超低耗損技術壁壘顯著。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：無鹵樹脂配方與高耐熱性</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="2383">複製代號</button>
+          </div>
+        </div>
+
+        <!-- GCE 金像電 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-sky-500/60 transition" data-category="PCB" data-search="2368 金像電 PCB 高多層板 伺服器板 800G 交換機">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-400">2368</span>
+            <span class="text-[11px] text-slate-400">高多層 PCB 主板</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">金像電</h4>
+            <span class="text-[11px] text-sky-400 font-mono">AI 伺服器主板龍頭</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">全球第一大高階伺服器與 800G 交換器 PCB 板廠，30 層以上良率遙遙領先。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：極高多層板壓合鑽孔工藝</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="2368">複製代號</button>
+          </div>
+        </div>
+
+        <!-- Delta 台達電 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-amber-500/60 transition" data-category="電源BBU" data-search="2308 台達電 電源供應器 Power Shelf 能源 水冷">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">2308</span>
+            <span class="text-[11px] text-slate-400">全球電源解決方案霸主</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">台達電</h4>
+            <span class="text-[11px] text-amber-400 font-mono">電力與水冷雙殺</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">主導電網到晶片的集中式 Power Shelf 架構，高壓轉換效率超過 97.5%。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：極致電力轉換效率與散熱集成</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="2308">複製代號</button>
+          </div>
+        </div>
+
+        <!-- STL 新盛力 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-amber-500/60 transition" data-category="電源BBU" data-search="4931 新盛力 BBU 電池模組 備援電池 鋰電池">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">4931</span>
+            <span class="text-[11px] text-slate-400">BBU 電池模組</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">新盛力</h4>
+            <span class="text-[11px] text-amber-400 font-mono">BBU 標配化黑馬</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">具備高耐壓大放電倍率電池封裝能力，抗伺服器運算脈衝電流驟降。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：大功率充放電管理安全設計</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="4931">複製代號</button>
+          </div>
+        </div>
+
+        <!-- Quanta 廣達 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-cyan-500/60 transition" data-category="ODM" data-search="2382 廣達 伺服器代工 雲達 ODM Direct Google AWS MSFT">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400">2382</span>
+            <span class="text-[11px] text-slate-400">整櫃伺服器代工 (ODM)</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">廣達</h4>
+            <span class="text-[11px] text-cyan-400 font-mono">北美 CSP 首選夥伴</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">雲端白牌伺服器先驅，Google 與微軟最大供應商，掌握整櫃系統整合核心。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：龐大營運資金與全球交付力</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="2382">複製代號</button>
+          </div>
+        </div>
+
+        <!-- Foxconn 鴻海 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-cyan-500/60 transition" data-category="ODM" data-search="2317 鴻海 富士康 NVL72 Blackwell 伺服器代工">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400">2317</span>
+            <span class="text-[11px] text-slate-400">全球 EMS / 垂直整合龍頭</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">鴻海</h4>
+            <span class="text-[11px] text-cyan-400 font-mono">NVL72 份額居冠</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">囊括 Blackwell NVL72 最高份額代工，機殼、水冷零組件自製率高。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：全球最大組裝產能與垂直零組件</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="2317">複製代號</button>
+          </div>
+        </div>
+
+        <!-- Wiwynn 緯穎 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-cyan-500/60 transition" data-category="ODM" data-search="6669 緯穎 白牌伺服器 純度高 Meta 亞馬遜">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400">6669</span>
+            <span class="text-[11px] text-slate-400">純雲端伺服器 ODM</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">緯穎</h4>
+            <span class="text-[11px] text-emerald-400 font-mono">AI 純度最高</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">無消費性電子負贅，直接對接 Meta、AWS 客製專屬機櫃，ASIC 伺服器營收大。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：純度最高、獲利率居代工廠冠</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="6669">複製代號</button>
+          </div>
+        </div>
+
+        <!-- Accton 智邦 -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-purple-500/60 transition" data-category="網通光" data-search="2345 智邦 白牌交換器 800G 1.6T 矽光子 CPO">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-400">2345</span>
+            <span class="text-[11px] text-slate-400">高階白牌交換器龍頭</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">智邦</h4>
+            <span class="text-[11px] text-purple-400 font-mono">800G 核心霸主</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">掌控雲端資料中心 400G/800G 交換機龐大市佔，前線佈局 1.6T 與 CPO 共同封裝光學。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：軟硬整合與超大規模網路驗證</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="2345">複製代號</button>
+          </div>
+        </div>
+
+        <!-- BizLink 貿聯-KY -->
+        <div class="stock-item bg-slate-900/80 border border-slate-800 rounded-xl p-4 hover:border-purple-500/60 transition" data-category="網通光" data-search="3665 貿聯-KY 貿聯 高速連接線 銅纜 PCIe 6.0 NVLink">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-400">3665</span>
+            <span class="text-[11px] text-slate-400">高階高速連接線束</span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <h4 class="text-base font-bold text-white">貿聯-KY</h4>
+            <span class="text-[11px] text-purple-400 font-mono">跨足晶片銅跳線</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">伺服器機櫃內部高頻高速銅纜跳線與 Power Whip 關鍵供應商，技術領先。</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-500">護城河：高速訊號抗雜訊屏蔽技術</span>
+            <button class="copy-btn text-[11px] text-cyan-400 hover:text-cyan-300 font-mono" data-code="3665">複製代號</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- No Result Notice -->
+      <div id="noResults" class="hidden text-center py-12 text-slate-500 text-xs">
+        找不到符合條件的台股 AI 標的，請嘗試更換搜尋關鍵字或分類。
+      </div>
+
+    </section>
+
+    <!-- SECTION 5: 未來演進趨勢結論 -->
+    <section class="rounded-2xl border border-slate-800 bg-slate-900/50 p-5 sm:p-8 space-y-4">
+      <div class="flex items-center gap-2">
+        <span class="h-2.5 w-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+        <h3 class="text-lg sm:text-xl font-bold text-white">五、 產業總結：台股 AI 科技鏈的三大長線演進</h3>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 text-xs text-slate-300">
+        <div class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1.5">
+          <span class="text-cyan-400 font-mono font-bold">1. ASIC 滲透率提高與多元化</span>
+          <p class="text-slate-400 leading-relaxed">
+            CSP 大廠（Google TPU、AWS Trainium、Meta MTIA）為了擺脫輝達高毛利壓榨，自研晶片出貨量將持續以高於業界平均的速度攀升，世芯、創意等設計服務廠長線受惠。
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1.5">
+          <span class="text-purple-400 font-mono font-bold">2. 矽光子 CPO 生態成形</span>
+          <p class="text-slate-400 leading-relaxed">
+            銅線在 1.6T 時訊號衰減與功耗過高已逼近極限。台積電領軍的矽光子聯盟，將光收發晶片直接與運算晶片合封，台灣封測與光通訊聚落迎來技術黃金期。
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1.5">
+          <span class="text-teal-400 font-mono font-bold">3. 雲端向邊緣 AI (Edge AI) 擴散</span>
+          <p class="text-slate-400 leading-relaxed">
+            當雲端大型模型訓練成熟，終端推論需求將帶動 AI PC、智慧手機、邊緣工業電腦（研華、樺漢）與機器人視覺運算，啟動中游零組件的第二波需求循環。
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Notification Toast for Clipboard -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-cyan-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 text-xs">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+    <span id="toastMsg">股票代號已複製！</span>
+  </div>
+
+  <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 space-y-1.5">
+      <p>© 2026 台股 AI 科技產業鏈架構深度報告 ‧ RWD Mobile-First Responsive Architecture</p>
+      <p class="font-mono text-slate-600 text-[11px]">Designed for iPhone, Android, Tablet and Large Desktop Displays</p>
+    </div>
+  </footer>
+
+  <!-- Interactive JavaScript logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Mobile Hamburger Drawer Toggle
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+      if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileNavLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+          });
+        });
+      }
+
+      // 2. View Switcher for Architecture Diagram
+      const viewVerticalBtn = document.getElementById('viewVerticalBtn');
+      const viewCanvasBtn = document.getElementById('viewCanvasBtn');
+      const verticalContainer = document.getElementById('verticalFlowContainer');
+      const canvasContainer = document.getElementById('canvasFlowContainer');
+
+      function setView(mode) {
+        if (mode === 'vertical') {
+          verticalContainer.classList.remove('hidden');
+          canvasContainer.classList.add('hidden');
+          viewVerticalBtn.classList.add('bg-cyan-500', 'text-slate-950');
+          viewVerticalBtn.classList.remove('text-slate-400');
+          viewCanvasBtn.classList.remove('bg-cyan-500', 'text-slate-950');
+          viewCanvasBtn.classList.add('text-slate-400');
+        } else {
+          verticalContainer.classList.add('hidden');
+          canvasContainer.classList.remove('hidden');
+          viewCanvasBtn.classList.add('bg-cyan-500', 'text-slate-950');
+          viewCanvasBtn.classList.remove('text-slate-400');
+          viewVerticalBtn.classList.remove('bg-cyan-500', 'text-slate-950');
+          viewVerticalBtn.classList.add('text-slate-400');
+        }
+      }
+
+      // Detect screen on load: if screen < 900px, use vertical view automatically
+      if (window.innerWidth < 900) {
+        setView('vertical');
+      } else {
+        setView('vertical'); // default vertical is still clean, but user can click canvas
+      }
+
+      viewVerticalBtn.addEventListener('click', () => setView('vertical'));
+      viewCanvasBtn.addEventListener('click', () => setView('canvas'));
+
+      // 3. Stock Screener: Filter & Search
+      const searchInput = document.getElementById('stockSearchInput');
+      const filterPills = document.querySelectorAll('.filter-pill');
+      const stockItems = document.querySelectorAll('.stock-item');
+      const noResults = document.getElementById('noResults');
+
+      let currentCategory = 'ALL';
+      let currentQuery = '';
+
+      function filterStocks() {
+        let visibleCount = 0;
+
+        stockItems.forEach(item => {
+          const itemCat = item.getAttribute('data-category') || '';
+          const itemSearchText = (item.getAttribute('data-search') || '').toLowerCase();
+          const itemContent = item.innerText.toLowerCase();
+
+          const matchesCat = (currentCategory === 'ALL') || (itemCat === currentCategory);
+          const matchesQuery = !currentQuery || itemSearchText.includes(currentQuery) || itemContent.includes(currentQuery);
+
+          if (matchesCat && matchesQuery) {
+            item.style.display = 'flex';
+            visibleCount++;
+          } else {
+            item.style.display = 'none';
+          }
+        });
+
+        if (visibleCount === 0) {
+          noResults.classList.remove('hidden');
+        } else {
+          noResults.classList.add('hidden');
+        }
+      }
+
+      filterPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          filterPills.forEach(p => {
+            p.classList.remove('bg-cyan-500', 'text-slate-950', 'font-bold');
+            p.classList.add('bg-slate-800/90', 'text-slate-300');
+          });
+
+          pill.classList.add('bg-cyan-500', 'text-slate-950', 'font-bold');
+          pill.classList.remove('bg-slate-800/90', 'text-slate-300');
+
+          currentCategory = pill.getAttribute('data-cat');
+          filterStocks();
+        });
+      });
+
+      searchInput.addEventListener('input', (e) => {
+        currentQuery = e.target.value.trim().toLowerCase();
+        filterStocks();
+      });
+
+      // 4. Copy Ticker Functionality (Safe for iframe without clipboard API restriction)
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      let toastTimer = null;
+
+      function showToast(text) {
+        toastMsg.textContent = text;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.add('translate-y-20', 'opacity-0');
+        }, 2200);
+      }
+
+      document.addEventListener('click', (e) => {
+        const copyBtn = e.target.closest('.copy-btn');
+        if (copyBtn) {
+          const code = copyBtn.getAttribute('data-code');
+          if (code) {
+            // Fallback execCommand for cross-iframe compatibility
+            const tempInput = document.createElement('input');
+            tempInput.value = code;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+              document.execCommand('copy');
+              showToast(`已複製代號：${code}`);
+            } catch (err) {
+              showToast(`請手動複製代號：${code}`);
+            }
+            document.body.removeChild(tempInput);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
